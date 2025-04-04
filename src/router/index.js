@@ -185,7 +185,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'box',
-        component: () => import('@/views/mall/category'),
+        component: () => import('@/views/mall/boxmanager'),
         name: 'Box management',
         meta: {
           perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],

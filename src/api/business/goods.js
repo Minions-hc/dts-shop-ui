@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
 export function getProductList(query) {
-  console.log(query);
   return request({
     url: '/product/getProductsByCondition',
     method: 'get',
@@ -10,7 +9,6 @@ export function getProductList(query) {
 }
 
 export function getProductById(query) {
-  console.log(query);
   return request({
     url: '/product/getProductById',
     method: 'get',
