@@ -18,9 +18,9 @@
       <el-table-column align="center" label="系列ID" prop="seriesId" sortable/>
       <el-table-column align="center" label="系列名" prop="seriesName"/>
 
-      <el-table-column align="center" property="seriesImage" label="系列主图">
+      <el-table-column align="center" label="系列主图" property="seriesImage" >
         <template slot-scope="scope">
-          <img :src="seriesImage" width="40">
+          <img :src="scope.row.seriesImage" width="40">
         </template>
       </el-table-column>
 
@@ -77,7 +77,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-
+         
         <el-form-item label="是否热榜" prop="isHot">
           <el-radio-group v-model="dataForm.isHot">
             <el-radio :label="true">是</el-radio>
@@ -252,7 +252,7 @@ export default {
       this.dataForm.iconUrl = response.data.url
     },
     uploadPicUrl: function(response) {
-      this.dataForm.picUrl = response.data.url
+      this.dataForm.seriesImage = response.data.url;
     },
     createData() {
       this.$refs['dataForm'].validate(valid => {
