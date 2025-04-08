@@ -256,7 +256,7 @@ export default {
     },
     handleUpdate(row) {
       this.dataForm = Object.assign({}, row)
-      queryProductsInBox({"boxId" : this.dataForm.boxId, "boxNumber" : this.dataForm.boxNumber}).then(response => {
+      queryProductsInBox({"boxId" : this.dataForm.boxId, "boxNumber" : this.dataForm.boxNumber, "seriesId" : this.dataForm.seriesId}).then(response => {
         this.products = response.data.data.items
       }).catch(() => {
         this.products = []
@@ -271,6 +271,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
+          this.dataForm.products = this.products
           updateProductBox(this.dataForm)
             .then(() => {
               for (const v of this.list) {

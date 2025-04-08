@@ -170,7 +170,7 @@ export default {
         pid: undefined,
         desc: '',
         iconUrl: undefined,
-        picUrl: undefined
+        seriesImage: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -232,7 +232,7 @@ export default {
         pid: undefined,
         desc: '',
         iconUrl: undefined,
-        picUrl: undefined
+        seriesImage: undefined
       }
     },
     onLevelChange: function(value) {
@@ -252,7 +252,7 @@ export default {
       this.dataForm.iconUrl = response.data.url
     },
     uploadPicUrl: function(response) {
-      this.dataForm.picUrl = response.data.url
+      this.dataForm.seriesImage = response.data.url
     },
     createData() {
       this.$refs['dataForm'].validate(valid => {

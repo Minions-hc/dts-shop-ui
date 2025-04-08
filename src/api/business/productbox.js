@@ -26,7 +26,7 @@ export function createProductBox(data) {
 
 export function updateProductBox(data) {
   return request({
-    url: '/productBox/update',
+    url: '/productBox/updateProductBox',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function updateProductBox(data) {
 
 export function deleteProductBox(data) {
   return request({
-    url: '/productBox/delete',
+    url: '/productBox/deleteProductBox',
     method: 'post',
     data
   })
