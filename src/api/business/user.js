@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/user/list',
+    url: '/user/queryUserList',
     method: 'get',
     params: query
   })
@@ -26,7 +26,7 @@ export function detailApprove(id) {
 
 export function listAddress(query) {
   return request({
-    url: '/address/list',
+    url: '/address/queryAddressList',
     method: 'get',
     params: query
   })

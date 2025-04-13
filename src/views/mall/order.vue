@@ -4,20 +4,22 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.userId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
-      <el-input v-model="listQuery.orderSn" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入订单编号"/>
-      <el-select v-model="listQuery.orderStatusArray" multiple size="mini" style="width: 200px" class="filter-item" placeholder="请选择订单状态">
+      <el-input v-model="listQuery.orderNo" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入订单编号"/>
+      <el-select v-model="listQuery.orderStatusStr" multiple size="mini" style="width: 200px" class="filter-item" placeholder="请选择订单状态">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
       </el-select>
-      <el-button v-permission="['GET /admin/order/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['GET /admin/order/queryOrderList']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn" sortable/>
+      <el-table-column align="center" min-width="100" label="订单编号" prop="orderNo" sortable/>
 
       <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"/>
+
+      <el-table-column align="center" min-width="100px" label="用户名称" prop="userName"/>
 
       <el-table-column align="center" min-width="100px" label="订单状态" prop="orderStatus">
         <template slot-scope="scope">
@@ -25,15 +27,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" min-width="100px" label="订单金额" prop="orderPrice"/>
+      <el-table-column align="center" min-width="100px" label="订单金额" prop="orderAmount"/>
 
-      <el-table-column align="center" min-width="100px" label="支付金额" prop="actualPrice"/>
+      <el-table-column align="center" min-width="100px" label="支付金额" prop="paymentAmount"/>
 
-      <el-table-column align="center" min-width="120px" label="支付时间" prop="payTime"/>
+      <el-table-column align="center" min-width="120px" label="支付时间" prop="paymentTime"/>
 
-      <el-table-column align="center" min-width="120px" label="物流单号" prop="shipSn"/>
+      <el-table-column align="center" min-width="120px" label="物流单号" prop="trackingNumber"/>
 
-      <el-table-column align="center" min-width="100px" label="物流渠道" prop="shipChannel"/>
+      <el-table-column align="center" min-width="100px" label="物流渠道" prop="shippingChannel"/>
 
       <el-table-column align="center" label="操作" min-width="150px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -50,7 +52,7 @@
     <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
       <el-form :data="orderDetail" label-position="left">
         <el-form-item label="订单编号">
-          <span>{{ orderDetail.order.orderSn }}</span>
+          <span>{{ orderDetail.orderNo }}</span>
         </el-form-item>
         <el-form-item label="订单状态">
           <template slot-scope="scope">
@@ -58,24 +60,21 @@
           </template>
         </el-form-item>
         <el-form-item label="订单用户">
-          <span>{{ orderDetail.user.nickname }}</span>
+          <span>{{ orderDetail.userName }}</span>
         </el-form-item>
-        <el-form-item label="用户留言">
-          <span>{{ orderDetail.order.message }}</span>
-        </el-form-item>
+
         <el-form-item label="收货信息">
-          <span>（收货人）{{ orderDetail.order.consignee }}</span>
-          <span>（手机号）{{ orderDetail.order.mobile }}</span>
-          <span>（地址）{{ orderDetail.order.address }}</span>
+          <span>（收货人）{{ orderDetail.receiverName }}</span>
+          <span>（手机号）{{ orderDetail.receiverPhone }}</span>
+          <span>（地址）{{ orderDetail.fullAddress }}</span>
         </el-form-item>
         <el-form-item label="商品信息">
-          <el-table :data="orderDetail.orderGoods" size="small" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
-            <el-table-column align="center" label="商品编号" prop="goodsSn" />
-            <el-table-column align="center" label="货品规格" prop="specifications" />
-            <el-table-column align="center" label="货品价格" prop="price" />
-            <el-table-column align="center" label="货品数量" prop="number" />
-            <el-table-column align="center" label="货品图片" prop="picUrl">
+          <el-table :data="orderDetail.orderItems" size="small" border fit highlight-current-row>
+            <el-table-column align="center" label="商品名称" prop="productName" />
+            <el-table-column align="center" label="商品编号" prop="productId" />
+            <el-table-column align="center" label="货品价格" prop="productPrice" />
+            <el-table-column align="center" label="货品数量" prop="quantity" />
+            <el-table-column align="center" label="货品图片" prop="productImg">
               <template slot-scope="scope">
                 <img :src="scope.row.picUrl" width="40">
               </template>
@@ -84,24 +83,24 @@
         </el-form-item>
         <el-form-item label="费用信息">
           <span>
-            (实际费用){{ orderDetail.order.actualPrice }}元 =
-            (商品总价){{ orderDetail.order.goodsPrice }}元 +
-            (快递费用){{ orderDetail.order.freightPrice }}元 -
-            (优惠减免){{ orderDetail.order.couponPrice }}元 -
-            (积分减免){{ orderDetail.order.integralPrice }}元
+            (实际费用){{ orderDetail.paymentAmount }}元 =
+            (商品总价){{ 1 }}元 +
+            (快递费用){{ 1 }}元 -
+            (优惠减免){{ 1 }}元 -
+            (积分减免){{ 1 }}元
           </span>
         </el-form-item>
         <el-form-item label="支付信息">
           <span>（支付渠道）微信支付</span>
-          <span>（支付时间）{{ orderDetail.order.payTime }}</span>
+          <span>（支付时间）{{ orderDetail.paymentTime }}</span>
         </el-form-item>
         <el-form-item label="快递信息">
-          <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
-          <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
-          <span>（发货时间）{{ orderDetail.order.shipTime }}</span>
+          <span>（快递公司）{{ orderDetail.shippingChannel }}</span>
+          <span>（快递单号）{{ orderDetail.trackingNumber }}</span>
+          <span>（发货时间）{{ 1 }}</span>
         </el-form-item>
         <el-form-item label="收货信息">
-          <span>（确认收货时间）{{ orderDetail.order.confirmTime }}</span>
+          <span>（确认收货时间）{{ 1 }}</span>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -233,7 +232,7 @@ export default {
       this.getList()
     },
     handleDetail(row) {
-      detailOrder(row.id).then(response => {
+      detailOrder(row.orderNo).then(response => {
         this.orderDetail = response.data.data
       })
       this.orderDialogVisible = true

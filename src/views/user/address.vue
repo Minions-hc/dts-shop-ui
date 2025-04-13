@@ -4,32 +4,45 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.userId" clearable size="small" class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
-      <el-input v-model="listQuery.name" clearable size="small" class="filter-item" style="width: 200px;" placeholder="请输入收货人名称"/>
+      <el-input v-model="listQuery.userName" clearable size="small" class="filter-item" style="width: 200px;" placeholder="请输入用户名称"/>
+      <el-input v-model="listQuery.receiverName" clearable size="small" class="filter-item" style="width: 200px;" placeholder="请输入收货人名称"/>
       <el-button class="filter-item" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" width="100px" label="地址ID" prop="id" sortable/>
+
+      <el-table-column align="center" width="100px" label="地址ID" prop="addressId" sortable/>
 
       <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"/>
 
-      <el-table-column align="center" min-width="100px" label="收货人名称" prop="name"/>
+      <el-table-column align="center" min-width="100px" label="用户名称" prop="userName"/>
 
-      <el-table-column align="center" min-width="100px" label="手机号码" prop="mobile"/>
+      <el-table-column align="center" min-width="100px" label="收货人名称" prop="receiverName"/>
 
-      <el-table-column align="center" min-width="300px" label="地址" prop="address">
-        <template slot-scope="scope">
-          {{ scope.row.province + scope.row.city + scope.row.area + scope.row.address }}
+      <el-table-column align="center" min-width="100px" label="手机号码" prop="phone"/>
+
+      <el-table-column align="center" min-width="100px" label="所在地区" prop="region"/>
+
+      <el-table-column align="center" min-width="100px" label="详细地址" prop="detailAddress"/>
+
+      <el-table-column align="center" min-width="80px" label="是否默认地址" prop="default">
+        <template #default="scope">
+          {{ scope.row.default ? '是' : '否' }}
         </template>
       </el-table-column>
 
-      <el-table-column align="center" min-width="80px" label="默认" prop="isDefault">
-        <template slot-scope="scope">
-          {{ scope.row.isDefault ? '是' : '否' }}
+      <el-table-column align="center" min-width="80px" label="是否自提地址" prop="pickup">
+        <template #default="scope">
+          {{ scope.row.pickup ? '是' : '否' }}
         </template>
       </el-table-column>
+
+      <el-table-column align="center" min-width="100px" label="创建时间" prop="createTime"/>
+
+
+      <el-table-column align="center" min-width="100px" label="修改时间" prop="updateTime"/>
 
     </el-table>
 
