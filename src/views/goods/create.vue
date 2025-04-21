@@ -6,11 +6,11 @@
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
 
         <el-form-item label="商品名称" prop="productName">
-          <el-input v-model="goods.productName"/>
+          <el-input v-model="goods.productName" class="elinput"/>
         </el-form-item>
       
         <el-form-item label="参考价格" prop="productPrice">
-          <el-input v-model="goods.productPrice" placeholder="0.00">
+          <el-input v-model="goods.productPrice" placeholder="0.00" class="elinput">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
@@ -30,20 +30,30 @@
 
 
         <el-form-item label="商品等级">
-          <el-select v-model="goods.productLevelId">
+          <el-select v-model="goods.productLevelId" class="elinput">
             <el-option v-for="item in productLevels" :key="item.levelId" :label="item.levelName" :value="item.levelId"/>
           </el-select>
         </el-form-item>
 
+        
+        <el-form-item label="积分" prop="productPoints">
+          <el-input v-model="goods.productPoints" class="elinput"/>
+        </el-form-item>
+
+        
+        <el-form-item label="勋章" prop="productBadge">
+          <el-input v-model="goods.productBadge" class="elinput"/>
+        </el-form-item>
+
 
          <el-form-item label="所属系列">
-          <el-select v-model="goods.productSeriesId">
+          <el-select v-model="goods.productSeriesId" class="elinput">
             <el-option v-for="item in productSeriesList" :key="item.seriesId" :label="item.seriesName" :value="item.seriesId"/>
           </el-select>
         </el-form-item>
 
         <el-form-item label="商品简介">
-          <el-input v-model="goods.brief"/>
+          <el-input v-model="goods.brief" class="elinput"/>
         </el-form-item>
 
       </el-form>
@@ -100,6 +110,10 @@
     height: 145px;
     display: block;
   }
+
+  .elinput {
+    width: 300px;
+  }
 </style>
 
 <script>
@@ -121,7 +135,7 @@ export default {
       keywords: [],
       productSeriesList: [],
       productLevels: [],
-      goods: { picUrl: '', gallery: [] },
+      goods: { productImage: '', gallery: [] },
       specVisiable: false,
       specForm: { specification: '', value: '', picUrl: '' },
       multipleSpec: false,
@@ -213,7 +227,7 @@ export default {
       this.newKeyword = ''
     },
     uploadPicUrl: function(response) {
-      this.goods.picUrl = response.data.url
+      this.goods.productImage = response.data.url
     },
     uploadOverrun: function() {
       this.$message({

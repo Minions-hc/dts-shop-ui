@@ -126,12 +126,12 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'category',
-        component: () => import('@/views/mall/category'),
-        name: 'category',
+        path: 'logistics',
+        component: () => import('@/views/mall/logistics'),
+        name: 'logistics',
         meta: {
-          perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],
-          title: '商品类目',
+          perms: ['GET /admin/logistics/listLogistics', 'POST /admin/logistics/createLogistics', 'GET /admin/logistics/deleteLogistics', 'POST /admin/logistics/updateLogistics'],
+          title: '物流管理',
           icon: 'list',
           noCache: true
         }
@@ -237,52 +237,40 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'promotionManage',
     meta: {
-      title: '推广管理',
+      title: '活动管理',
       icon: 'size'
     },
     children: [
       {
-        path: 'articleList',
-        component: () => import('@/views/promotion/articleList'),
-        name: 'articleList',
-        meta: {
-          perms: ['GET /admin/article/list', 'POST /admin/article/delete'],
-          title: '公告列表',
-          icon: 'language',
-          noCache: true
-        }
-      },
-      {
-        path: 'articleCreate',
-        component: () => import('@/views/promotion/articleCreate'),
-        name: 'articleCreate',
+        path: 'RoyalRewardRules',
+        component: () => import('@/views/promotion/royalreward'),
+        name: 'royalRewardRuler',
         meta: {
           perms: ['POST /admin/article/create'],
-          title: '发布公告',
+          title: '欧皇赏',
           icon: 'link',
           noCache: true
         }
       },
       {
-        path: 'articleEdit',
-        component: () => import('@/views/promotion/articleEdit'),
-        name: 'articleEdit',
+        path: 'luckyDrawActivity',
+        component: () => import('@/views/promotion/luckydraw'),
+        name: 'luckyDrawActivity',
         meta: {
-          perms: ['GET /admin/article/detail', 'POST /admin/article/update'],
-          title: '公告通知编辑',
-          icon: 'form',
+          perms: ['POST /admin/article/create'],
+          title: '幸运大抽奖',
+          icon: 'link',
           noCache: true
-        },
-        hidden: true
+        }
       },
       {
-        path: 'ad',
-        component: () => import('@/views/promotion/ad'),
-        name: 'ad',
+        path: 'luckyDrawPrize',
+        component: () => import('@/views/promotion/luckydrawprize'),
+        name: 'luckyDrawPrize',
         meta: {
-          perms: ['GET /admin/ad/list', 'POST /admin/ad/create', 'GET /admin/ad/read', 'POST /admin/ad/update', 'POST /admin/ad/delete'],
-          title: '广告管理',
-          icon: 'clipboard',
+          perms: ['POST /admin/article/create'],
+          title: '奖品管理',
+          icon: 'link',
           noCache: true
         }
       },
@@ -309,39 +297,6 @@ export const asyncRouterMap = [
         },
         hidden: true
       },
-      {
-        path: 'topic',
-        component: () => import('@/views/promotion/topic'),
-        name: 'topic',
-        meta: {
-          perms: ['GET /admin/topic/list', 'POST /admin/topic/create', 'GET /admin/topic/read', 'POST /admin/topic/update', 'POST /admin/topic/delete'],
-          title: '专题管理',
-          icon: 'icon',
-          noCache: true
-        }
-      },
-      {
-        path: 'groupon-rule',
-        component: () => import('@/views/promotion/grouponRule'),
-        name: 'grouponRule',
-        meta: {
-          perms: ['GET /admin/groupon/list', 'POST /admin/groupon/create', 'POST /admin/groupon/update', 'POST /admin/groupon/delete'],
-          title: '团购规则',
-          icon: 'table',
-          noCache: true
-        }
-      },
-      {
-        path: 'groupon-activity',
-        component: () => import('@/views/promotion/grouponActivity'),
-        name: 'grouponActivity',
-        meta: {
-          perms: ['GET /admin/groupon/listRecord'],
-          title: '团购活动',
-          icon: 'theme',
-          noCache: true
-        }
-      }
     ]
   },
 
@@ -434,75 +389,6 @@ export const asyncRouterMap = [
           title: '商品统计',
           icon: 'table',
           noCache: true
-        }
-      }
-    ]
-  },
-  {
-    path: 'external-link',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'externalLink',
-    meta: {
-      title: '外链',
-      icon: 'link'
-    },
-    children: [
-      {
-        path: 'https://cloud.tencent.com/product/cos',
-        meta: {
-          title: '腾讯云存储',
-          icon: 'link',
-          perms: ['POST /admin/role/permissions']
-        }
-      },
-      {
-        path: 'https://cloud.tencent.com/product/sms',
-        meta: {
-          title: '腾讯云短信',
-          icon: 'link',
-          perms: ['POST /admin/role/permissions']
-        }
-      },
-      {
-        path: 'https://pay.weixin.qq.com/index.php/core/home/login',
-        meta: {
-          title: '微信支付',
-          icon: 'link',
-          perms: ['POST /admin/role/permissions']
-        }
-      },
-      {
-        path: 'https://mpkf.weixin.qq.com/',
-        meta: {
-          title: '小程序客服',
-          icon: 'link',
-          perms: ['POST /admin/role/permissions']
-        }
-      },
-      {
-        path: 'https://www.alibabacloud.com/zh/product/oss',
-        meta: {
-          title: '阿里云存储',
-          icon: 'link',
-          perms: ['POST /admin/role/permissions']
-        }
-      },
-      {
-        path: 'https://www.qiniu.com/products/kodo',
-        meta: {
-          title: '七牛云存储',
-          icon: 'link',
-          perms: ['POST /admin/role/permissions']
-        }
-      },
-      {
-        path: 'http://www.kdniao.com/api-track',
-        meta: {
-          title: '快递鸟',
-          icon: 'link',
-          perms: ['POST /admin/role/permissions']
         }
       }
     ]

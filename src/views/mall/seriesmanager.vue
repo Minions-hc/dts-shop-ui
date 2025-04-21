@@ -31,13 +31,13 @@
           <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '是' : '否' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="是否踩雷" prop="isHot">
+      <el-table-column align="center" label="是否踩雷" prop="isAvoid">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isAvoid ? 'success' : 'error' ">{{ scope.row.isAvoid ? '是' : '否' }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="购买次数" prop="purchaseCount"/>
+      <el-table-column align="center" label="参考价格" prop="price"/>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/productSeries/updateProductSeries']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -92,9 +92,9 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="购买次数" prop="purchaseCount">
-          <el-input v-model="dataForm.purchaseCount" placeholder="0.00">
-            <template slot="append">次</template>
+        <el-form-item label="参考价格" prop="price">
+          <el-input v-model="dataForm.price" placeholder="0.00">
+            <template slot="append">元</template>
           </el-input>
         </el-form-item>
 

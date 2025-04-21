@@ -38,7 +38,7 @@
 
       <el-table-column align="center" property="productImage" label="图片">
         <template slot-scope="scope">
-          <img :src="scope.row.picUrl" width="40">
+          <img :src="scope.row.productImage" width="40">
         </template>
       </el-table-column>
 
@@ -46,37 +46,12 @@
 
       <el-table-column align="center" label="产品等级" prop="productLevelName"/>
 
-      <el-table-column align="center" label="详情" prop="detail">
-        <template slot-scope="scope">
-          <el-dialog :visible.sync="detailDialogVisible" title="商品详情">
-            <div v-html="goodsDetail"/>
-          </el-dialog>
-          <el-button type="primary" size="mini" @click="showDetail(scope.row.detail)">查看</el-button>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="积分" prop="productPoints"/>
+
+      <el-table-column align="center" label="勋章" prop="productBadge"/>
 
       <el-table-column align="center" label="参考价格" prop="productPrice"/>
-
-      <el-table-column align="center" label="是否新品" prop="isNew">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '新品' : '非新品' }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="是否热品" prop="isHot">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '热品' : '非热品' }}</el-tag>
-        </template>
-      </el-table-column>
-
-   
-      <el-table-column align="center" label="是否在售" prop="isOnSale">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">{{ scope.row.isOnSale ? '在售' : '未售' }}</el-tag>
-        </template>
-      </el-table-column>
- 
-
+  
       <el-table-column align="center" label="操作" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
