@@ -297,6 +297,28 @@ export const asyncRouterMap = [
         },
         hidden: true
       },
+      {
+        path: 'redemptioncode',
+        component: () => import('@/views/promotion/redemptioncode'),
+        name: 'redemptioncode',
+        meta: {
+          perms: ['GET /admin/redemptioncode/list', 'POST /admin/redemptioncode/create', 'POST /admin/redemptioncode/delete'],
+          title: '兑换码管理',
+          icon: 'money',
+          noCache: true
+        }
+      },
+      {
+        path: 'wechatqrcode',
+        component: () => import('@/views/promotion/wechatqrcode'),
+        name: 'wechatqrcode',
+        meta: {
+          perms: ['GET /admin/coupon/list'],
+          title: '进群二维码',
+          icon: 'link',
+          noCache: true
+        }
+      }
     ]
   },
 

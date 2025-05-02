@@ -16,11 +16,11 @@ export function createCoupon(data) {
   })
 }
 
-export function readCoupon(id) {
+export function readCoupon(couponId) {
   return request({
     url: '/coupon/read',
     method: 'get',
-    params: { id }
+    params: { couponId }
   })
 }
 
