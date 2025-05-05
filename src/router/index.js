@@ -313,9 +313,31 @@ export const asyncRouterMap = [
         component: () => import('@/views/promotion/wechatqrcode'),
         name: 'wechatqrcode',
         meta: {
-          perms: ['GET /admin/coupon/list'],
+          perms: ['GET /admin/wechatqrcode/list'],
           title: '进群二维码',
           icon: 'link',
+          noCache: true
+        }
+      },
+      {
+        path: 'marketSeries',
+        component: () => import('@/views/promotion/marketSeries'),
+        name: 'marketSeries',
+        meta: {
+          perms: ['GET /admin/marketSeries/list', 'POST /admin/marketSeries/create', 'POST /admin/marketSeries/delete'],
+          title: '集市换娃系列',
+          icon: 'list',
+          noCache: true
+        }
+      },
+      {
+        path: 'marketProduct',
+        component: () => import('@/views/promotion/marketProduct'),
+        name: 'marketProduct',
+        meta: {
+          perms: ['GET /admin/marketProduct/list', 'POST /admin/marketProduct/create', 'POST /admin/marketProduct/delete'],
+          title: '集市换娃',
+          icon: 'list',
           noCache: true
         }
       }
