@@ -88,7 +88,32 @@
 
       <el-table-column
         align="center"
-        min-width="100px"
+        min-width="80px"
+        label="优惠券类型"
+        prop="couponType"
+      >
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.couponType === 1 ? '' : 'success'">
+            {{ scope.row.couponType === 1 ? '无门槛券' : '满减券' }}
+          </el-tag>
+        </template>
+      </el-table-column>
+
+      <!-- 新增：最低消费金额列 -->
+      <el-table-column
+        align="center"
+        min-width="80px"
+        label="最低消费金额"
+        prop="minOrderAmount"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.couponType === 2 ? `${scope.row.minOrderAmount}元` : '无限制' }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
+        min-width="80px"
         label="优惠金额"
         prop="couponAmount"
       >
@@ -97,14 +122,14 @@
 
       <el-table-column
         align="center"
-        min-width="100px"
+        min-width="80px"
         label="优惠券数量"
         prop="totalQuantity"
       />
 
       <el-table-column
         align="center"
-        min-width="100px"
+        min-width="80px"
         label="剩余数量"
         prop="remainingQuantity"
       />
@@ -203,6 +228,37 @@
         >
           <el-input v-model="dataForm.couponName" />
         </el-form-item>
+        <!-- 新增：优惠券类型选择 -->
+        <el-form-item
+          label="优惠券类型"
+          prop="couponType"
+        >
+          <el-select
+            v-model="dataForm.couponType"
+            placeholder="请选择优惠券类型"
+            style="width: 100%"
+            @change="handleCouponTypeChange"
+          >
+            <el-option
+              label="无门槛券"
+              :value="1"
+            />
+            <el-option
+              label="满减券"
+              :value="2"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- 新增：最低订单金额（仅满减券显示） -->
+        <el-form-item
+          v-if="dataForm.couponType === 2"
+          label="最低订单金额"
+          prop="minOrderAmount"
+        >
+          <el-input v-model="dataForm.minOrderAmount">
+            <template slot="append">元</template>
+          </el-input>
+        </el-form-item>
         <el-form-item
           label="优惠金额"
           prop="couponAmount"
@@ -230,7 +286,7 @@
 
         <el-form-item
           label="有效期"
-          prop="drawDate"
+          prop="expireTime"
         >
           <el-date-picker
             v-model="dataForm.expireTime"
@@ -315,11 +371,32 @@ export default {
     return {
       redemptionCodes: [],
       rules: {
-        drawDate: [
-          { required: true, message: '请选择开奖日期', trigger: 'blur' }
+        expireTime: [
+          { required: true, message: '请选择优惠结束日期', trigger: 'blur' }
         ],
         name: [
           { required: true, message: '优惠券标题不能为空', trigger: 'blur' }
+        ],
+        couponType: [
+          { required: true, message: '请选择优惠券类型', trigger: 'change' }
+        ],
+        minOrderAmount: [
+          { required: false },
+          {
+            validator: (rule, value, callback) => {
+              if (this.dataForm.couponType === 2 && !value) {
+                callback(new Error('满减券必须设置最低订单金额'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          },
+          {
+            pattern: /^\d+(\.\d{1,2})?$/,
+            message: '请输入正确的金额格式',
+            trigger: 'blur'
+          }
         ]
       },
       // 日期选择器配置
@@ -388,7 +465,10 @@ export default {
         timeType: 0,
         days: 0,
         startTime: null,
-        endTime: null
+        endTime: null,
+        expireTime: null,
+        couponType: 1, // 默认选择无门槛券
+        minOrderAmount: null // 最低订单金额
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -403,6 +483,12 @@ export default {
     this.getList()
   },
   methods: {
+    handleCouponTypeChange(value) {
+      // 切换优惠券类型时重置最低订单金额
+      if (value === 1) {
+        this.dataForm.minOrderAmount = null
+      }
+    },
     loadLSelectOptionData() {
       listRedemptionCode({ available: true, codeType: 0 }).then(response => {
         this.redemptionCodes = response.data.data.items
@@ -458,7 +544,12 @@ export default {
     createData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          createCoupon(this.dataForm)
+          const formData = {
+            ...this.dataForm,
+            // 如果是无门槛券，确保minOrderAmount为null
+            minOrderAmount: this.dataForm.couponType === 1 ? null : this.dataForm.minOrderAmount
+          }
+          createCoupon(formData)
             .then(response => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
@@ -495,7 +586,12 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateCoupon(this.dataForm)
+          const formData = {
+            ...this.dataForm,
+            // 如果是无门槛券，确保minOrderAmount为null
+            minOrderAmount: this.dataForm.couponType === 1 ? null : this.dataForm.minOrderAmount
+          }
+          updateCoupon(formData)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
