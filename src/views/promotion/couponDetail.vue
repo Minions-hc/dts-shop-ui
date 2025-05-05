@@ -4,74 +4,93 @@
     <div class="table-layout">
       <el-row>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell-title"
         >优惠券ID</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell-title"
         >优惠券名称</el-col>
+
         <el-col
-          :span="4"
+          :span="5"
+          class="table-cell-title"
+        >优惠券类型</el-col>
+
+        <el-col
+          :span="5"
+          class="table-cell-title"
+        >最低消费金额</el-col>
+
+        <el-col
+          :span="5"
           class="table-cell-title"
         >优惠金额</el-col>
-        <el-col
-          :span="4"
-          class="table-cell-title"
-        >总数量</el-col>
-
       </el-row>
       <el-row>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell"
         >{{ coupon.couponId }}</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell"
         >{{ coupon.couponName }}</el-col>
         <el-col
-          :span="4"
+          :span="5"
+          class="table-cell"
+        >{{ coupon.couponType | formatCouponType }}</el-col>
+        <el-col
+          :span="5"
+          class="table-cell"
+        > {{ coupon.couponType === 2 ? `${coupon.minOrderAmount}元` : '无限制' }}</el-col>
+
+        <el-col
+          :span="5"
           class="table-cell"
         >{{ coupon.couponAmount }}元</el-col>
-        <el-col
-          :span="4"
-          class="table-cell"
-        >{{ coupon.totalQuantity }}</el-col>
       </el-row>
       <el-row>
         <el-col
-          :span="4"
+          :span="5"
+          class="table-cell-title"
+        >总数量</el-col>
+        <el-col
+          :span="5"
           class="table-cell-title"
         >剩余数量</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell-title"
         >当前状态</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell-title"
         >过期时间</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell-title"
         >优惠兑换码</el-col>
       </el-row>
       <el-row>
         <el-col
-          :span="4"
+          :span="5"
+          class="table-cell"
+        >{{ coupon.totalQuantity }}</el-col>
+        <el-col
+          :span="5"
           class="table-cell"
         >{{ coupon.remainingQuantity }}</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell"
         >{{ coupon.status | formatStatus }}</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell"
         >{{ coupon.expireTime }}</el-col>
         <el-col
-          :span="4"
+          :span="5"
           class="table-cell"
         >{{ coupon.redemptionCode }}</el-col>
       </el-row>
@@ -205,6 +224,14 @@ export default {
         return '过期'
       }
     },
+    formatCouponType(couponType) {
+      if (couponType === 1) {
+        return '无门槛券'
+      }
+      if (couponType === 2) {
+        return '满减券'
+      }
+    },
     formatUseStatus(status) {
       if (status === 1) {
         return '未使用'
@@ -283,6 +310,9 @@ export default {
     margin-top: 20px;
     border-left: 1px solid #DCDFE6;
     border-top: 1px solid #DCDFE6;
+  }
+  .el-col-5 {
+    width: 20%;
   }
   .table-cell {
     height: 60px;
