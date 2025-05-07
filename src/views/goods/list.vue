@@ -3,92 +3,184 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.productId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-input v-model="listQuery.productName" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
+      <el-input
+        v-model="listQuery.productId"
+        clearable
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        placeholder="请输入商品编号"
+      />
+      <el-input
+        v-model="listQuery.productName"
+        clearable
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        placeholder="请输入商品名称"
+      />
 
-       <el-select v-model="listQuery.productSeriesId" size="mini" style="width: 200px" class="filter-item" placeholder="请选择产品系列">
+      <el-select
+        v-model="listQuery.productSeriesId"
+        size="mini"
+        style="width: 200px"
+        class="filter-item"
+        placeholder="请选择产品系列"
+      >
         <el-option
-          v-for="item in this.productSeriesList"
+          v-for="item in productSeriesList"
           :key="item.seriesId"
           :label="item.seriesName"
-          :value="item.seriesId">
-        </el-option>
-       </el-select>
-       
-       <el-select v-model="listQuery.productLevelId" size="mini" style="width: 200px" class="filter-item" placeholder="请选择产品等级">
+          :value="item.seriesId"
+        />
+      </el-select>
+
+      <el-select
+        v-model="listQuery.productLevelId"
+        size="mini"
+        style="width: 200px"
+        class="filter-item"
+        placeholder="请选择产品等级"
+      >
         <el-option
-          v-for="item in this.productLevels"
+          v-for="item in productLevels"
           :key="item.levelId"
           :label="item.levelName"
-          :value="item.levelId">
-        </el-option>
-       </el-select>
+          :value="item.levelId"
+        />
+      </el-select>
 
-      <el-button size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button
+        size="mini"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >查找</el-button>
+      <el-button
+        size="mini"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleCreate"
+      >添加</el-button>
+      <el-button
+        :loading="downloadLoading"
+        size="mini"
+        class="filter-item"
+        type="warning"
+        icon="el-icon-download"
+        @click="handleDownload"
+      >导出</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      size="small"
+      element-loading-text="正在查询中。。。"
+      border
+      fit
+      highlight-current-row
+    >
 
-      <el-table-column align="center" min-width="110" label="商品编号" prop="productId"/>
+      <el-table-column
+        align="center"
+        min-width="110"
+        label="商品编号"
+        prop="productId"
+      />
 
-      <el-table-column align="center" min-width="200" label="名称" prop="productName" sortable/>
+      <el-table-column
+        align="center"
+        min-width="200"
+        label="名称"
+        prop="productName"
+        sortable
+      />
 
-      <el-table-column align="center" property="productImage" label="图片">
+      <el-table-column
+        align="center"
+        property="productImage"
+        label="图片"
+      >
         <template slot-scope="scope">
-          <img :src="scope.row.productImage" width="40">
+          <img
+            :src="scope.row.productImage"
+            width="40"
+          >
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所属系列" prop="productSeriesName"/>
+      <el-table-column
+        align="center"
+        label="所属系列"
+        prop="productSeriesName"
+      />
 
-      <el-table-column align="center" label="产品等级" prop="productLevelName"/>
+      <el-table-column
+        align="center"
+        label="产品等级"
+        prop="productLevelName"
+      />
 
-      <el-table-column align="center" label="积分" prop="productPoints"/>
+      <el-table-column
+        align="center"
+        label="魂力值"
+        prop="productSpiritPower"
+      />
 
-      <el-table-column align="center" label="勋章" prop="productBadge"/>
+      <el-table-column
+        align="center"
+        label="勋章"
+        prop="productBadge"
+      />
 
-      <el-table-column align="center" label="参考价格" prop="productPrice"/>
-  
-      <el-table-column align="center" label="操作" width="150" class-name="small-padding fixed-width">
+      <el-table-column
+        align="center"
+        label="参考价格"
+        prop="productPrice"
+      />
+
+      <el-table-column
+        align="center"
+        label="操作"
+        width="150"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleUpdate(scope.row)"
+          >编辑</el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            @click="handleDelete(scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip
+      placement="top"
+      content="返回顶部"
+    >
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 
   </div>
 </template>
-
-<style>
-	.el-dialog {
-    width: 60%;
-	}
-  .table-expand {
-    font-size: 0;
-  }
-  .table-expand label {
-    width: 100px;
-    color: #99a9bf;
-  }
-  .table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-  }
-  .gallery {
-    width: 80px;
-    margin-right: 10px;
-  }
-</style>
 
 <script>
 import { getProductList, deleteProduct, getProductSeries, getProductLevels } from '@/api/business/goods'
@@ -96,7 +188,7 @@ import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
-  name: 'productList',
+  name: 'ProductList',
   components: { BackToTop, Pagination },
   data() {
     return {
@@ -123,12 +215,12 @@ export default {
     this.init()
   },
   methods: {
-     init: function() {
+    init: function() {
       getProductSeries().then(response => {
         this.productSeriesList = response.data.data.items
       })
 
-       getProductLevels().then(response => {
+      getProductLevels().then(response => {
         this.productLevels = response.data.data.items
       })
     },
@@ -153,7 +245,7 @@ export default {
     },
     handleUpdate(row) {
       const editDataForm = Object.assign({}, row)
-      const productId = editDataForm.productId;
+      const productId = editDataForm.productId
       this.$router.push({ path: '/goods/edit', query: { productId: productId }})
     },
     showDetail(detail) {
@@ -187,3 +279,24 @@ export default {
   }
 }
 </script>
+
+<style>
+	.el-dialog {
+    width: 60%;
+	}
+  .table-expand {
+    font-size: 0;
+  }
+  .table-expand label {
+    width: 100px;
+    color: #99a9bf;
+  }
+  .table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+  .gallery {
+    width: 80px;
+    margin-right: 10px;
+  }
+</style>

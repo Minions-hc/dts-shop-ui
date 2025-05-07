@@ -44,7 +44,6 @@
           :span="5"
           class="table-cell"
         > {{ coupon.couponType === 2 ? `${coupon.minOrderAmount}元` : '无限制' }}</el-col>
-
         <el-col
           :span="5"
           class="table-cell"

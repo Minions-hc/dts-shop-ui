@@ -100,6 +100,16 @@
 
       <el-table-column
         align="center"
+        label="是否魂力赏"
+        prop="isSpiritPower"
+      >
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.isSpiritPower ? 'success' : 'error' ">{{ scope.row.isSpiritPower ? '是' : '否' }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
         label="是否热榜"
         prop="isHot"
       >
@@ -107,6 +117,7 @@
           <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '是' : '否' }}</el-tag>
         </template>
       </el-table-column>
+
       <el-table-column
         align="center"
         label="是否踩雷"
@@ -250,10 +261,26 @@
         </el-form-item>
 
         <el-form-item
+          label="是否魂力赏"
+          prop="isSpiritPower"
+        >
+          <el-radio-group
+            v-model="dataForm.isSpiritPower"
+            @change="handleSpiritPowerChange"
+          >
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item
           label="是否热榜"
           prop="isHot"
         >
-          <el-radio-group v-model="dataForm.isHot">
+          <el-radio-group
+            v-model="dataForm.isHot"
+            :disabled="dataForm.isSpiritPower"
+          >
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
@@ -263,7 +290,10 @@
           label="是否踩雷"
           prop="isAvoid"
         >
-          <el-radio-group v-model="dataForm.isAvoid">
+          <el-radio-group
+            v-model="dataForm.isAvoid"
+            :disabled="dataForm.isSpiritPower"
+          >
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
@@ -282,7 +312,10 @@
           label="是否人气新品"
           prop="isPopularNew"
         >
-          <el-radio-group v-model="dataForm.isPopularNew">
+          <el-radio-group
+            v-model="dataForm.isPopularNew"
+            :disabled="dataForm.isSpiritPower"
+          >
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
@@ -292,21 +325,24 @@
           label="是否爆款推荐"
           prop="isHotRecommend"
         >
-          <el-radio-group v-model="dataForm.isHotRecommend">
+          <el-radio-group
+            v-model="dataForm.isHotRecommend"
+            :disabled="dataForm.isSpiritPower"
+          >
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item
-          label="参考价格"
+          :label="dataForm.isSpiritPower ? '参考魂力值' : '参考价格'"
           prop="price"
         >
           <el-input
             v-model="dataForm.price"
-            placeholder="0.00"
+            :placeholder="dataForm.isSpiritPower ? '0' : '0.00'"
           >
-            <template slot="append">元</template>
+            <template slot="append">{{ dataForm.isSpiritPower ? '点' : '元' }}</template>
           </el-input>
         </el-form-item>
       </el-form>
@@ -358,16 +394,14 @@ export default {
       },
       catL1: {},
       dataForm: {
-        id: undefined,
-        name: '',
-        keywords: '',
-        level: 'L2',
-        pid: undefined,
-        desc: '',
-        iconUrl: undefined,
-        seriesImage: undefined,
+        isSpiritPower: false,
+        isHot: false,
         isAvoid: false,
-        priceRanges: []
+        isPopularNew: false,
+        isHotRecommend: false,
+        price: '',
+        priceRanges: [],
+        seriesImage: undefined
       },
       formValid: false,
       dialogFormVisible: false,
@@ -415,12 +449,28 @@ export default {
         }]
       }
       this.checkFormValidity()
+    },
+    'dataForm.isSpiritPower'(newVal) {
+      if (newVal) {
+        this.dataForm.isHot = false
+        this.dataForm.isAvoid = false
+        this.dataForm.isPopularNew = false
+        this.dataForm.isHotRecommend = false
+      }
     }
   },
   created() {
     this.getList()
   },
   methods: {
+    handleSpiritPowerChange(val) {
+      if (val) {
+        this.dataForm.isHot = false
+        this.dataForm.isAvoid = false
+        this.dataForm.isPopularNew = false
+        this.dataForm.isHotRecommend = false
+      }
+    },
     formatPriceRanges(priceRanges) {
       try {
         // 1. 处理空值情况
@@ -527,6 +577,7 @@ export default {
     },
     createData() {
       this.$refs['dataForm'].validate(valid => {
+        this.checkFormValidity()
         if (!this.formValid) return
         if (valid) {
           // 准备提交数据
@@ -572,6 +623,7 @@ export default {
     },
     updateData() {
       this.$refs['dataForm'].validate(valid => {
+        this.checkFormValidity()
         if (!this.formValid) return
         if (valid) {
           // 准备提交数据

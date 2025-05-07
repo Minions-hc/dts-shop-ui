@@ -3,18 +3,36 @@
 
     <el-card class="box-card">
       <h3>商品维护</h3>
-      <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
+      <el-form
+        ref="goods"
+        :rules="rules"
+        :model="goods"
+        label-width="150px"
+      >
 
-        <el-form-item label="商品名称" prop="productName">
-          <el-input v-model="goods.productName" class="elinput"/>
+        <el-form-item
+          label="商品名称"
+          prop="productName"
+        >
+          <el-input
+            v-model="goods.productName"
+            class="elinput"
+          />
         </el-form-item>
-      
-        <el-form-item label="参考价格" prop="productPrice">
-          <el-input v-model="goods.productPrice" placeholder="0.00" class="elinput">
+
+        <el-form-item
+          label="参考价格"
+          prop="productPrice"
+        >
+          <el-input
+            v-model="goods.productPrice"
+            placeholder="0.00"
+            class="elinput"
+          >
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
-       
+
         <el-form-item label="商品图片">
           <el-upload
             :action="uploadPath"
@@ -22,38 +40,73 @@
             :headers="headers"
             :on-success="uploadPicUrl"
             class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="goods.productImage" :src="goods.productImage" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            accept=".jpg,.jpeg,.png,.gif"
+          >
+            <img
+              v-if="goods.productImage"
+              :src="goods.productImage"
+              class="avatar"
+            >
+            <i
+              v-else
+              class="el-icon-plus avatar-uploader-icon"
+            />
           </el-upload>
         </el-form-item>
 
-
         <el-form-item label="商品等级">
-          <el-select v-model="goods.productLevelId" class="elinput">
-            <el-option v-for="item in productLevels" :key="item.levelId" :label="item.levelName" :value="item.levelId"/>
+          <el-select
+            v-model="goods.productLevelId"
+            class="elinput"
+          >
+            <el-option
+              v-for="item in productLevels"
+              :key="item.levelId"
+              :label="item.levelName"
+              :value="item.levelId"
+            />
           </el-select>
         </el-form-item>
 
-        
-        <el-form-item label="积分" prop="productPoints">
-          <el-input v-model="goods.productPoints" class="elinput"/>
+        <el-form-item
+          label="魂力值"
+          prop="productSpiritPower"
+        >
+          <el-input
+            v-model="goods.productSpiritPower"
+            class="elinput"
+          />
         </el-form-item>
 
-        
-        <el-form-item label="勋章" prop="productBadge">
-          <el-input v-model="goods.productBadge" class="elinput"/>
+        <el-form-item
+          label="勋章"
+          prop="productBadge"
+        >
+          <el-input
+            v-model="goods.productBadge"
+            class="elinput"
+          />
         </el-form-item>
 
-
-         <el-form-item label="所属系列">
-          <el-select v-model="goods.productSeriesId" class="elinput">
-            <el-option v-for="item in productSeriesList" :key="item.seriesId" :label="item.seriesName" :value="item.seriesId"/>
+        <el-form-item label="所属系列">
+          <el-select
+            v-model="goods.productSeriesId"
+            class="elinput"
+          >
+            <el-option
+              v-for="item in productSeriesList"
+              :key="item.seriesId"
+              :label="item.seriesName"
+              :value="item.seriesId"
+            />
           </el-select>
         </el-form-item>
 
         <el-form-item label="商品简介">
-          <el-input v-model="goods.brief" class="elinput"/>
+          <el-input
+            v-model="goods.brief"
+            class="elinput"
+          />
         </el-form-item>
 
       </el-form>
@@ -61,72 +114,23 @@
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handlePublish">上架</el-button>
+      <el-button
+        type="primary"
+        @click="handlePublish"
+      >上架</el-button>
     </div>
 
   </div>
 </template>
 
-<style>
-  .el-card {
-    margin-bottom: 10px;
-  }
-
-  .el-tag + .el-tag {
-    margin-left: 10px;
-  }
-
-  .input-new-keyword {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
-
-  .avatar-uploader .el-upload {
-    width: 145px;
-    height: 145px;
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .avatar-uploader .el-upload:hover {
-    border-color: #20a0ff;
-  }
-
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 120px;
-    height: 120px;
-    line-height: 120px;
-    text-align: center;
-  }
-
-  .avatar {
-    width: 145px;
-    height: 145px;
-    display: block;
-  }
-
-  .elinput {
-    width: 300px;
-  }
-</style>
-
 <script>
 import { addProduct, getProductSeries, getProductLevels } from '@/api/business/goods'
 import { createStorage, uploadPath } from '@/api/business/storage'
-import Editor from '@tinymce/tinymce-vue'
 import { MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'
 
 export default {
   name: 'GoodsCreate',
-  components: { Editor },
-
   data() {
     return {
       uploadPath,
@@ -184,12 +188,11 @@ export default {
         this.productSeriesList = response.data.data.items
       })
 
-       getProductLevels().then(response => {
+      getProductLevels().then(response => {
         this.productLevels = response.data.data.items
       })
-
     },
- 
+
     handleCancel: function() {
       this.$router.push({ path: '/goods/list' })
     },
@@ -390,3 +393,52 @@ export default {
   }
 }
 </script>
+
+<style>
+  .el-card {
+    margin-bottom: 10px;
+  }
+
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+
+  .input-new-keyword {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
+
+  .avatar-uploader .el-upload {
+    width: 145px;
+    height: 145px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
+
+  .elinput {
+    width: 300px;
+  }
+</style>
