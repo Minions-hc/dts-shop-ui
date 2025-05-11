@@ -146,6 +146,17 @@ export const asyncRouterMap = [
           icon: 'nested',
           noCache: true
         }
+      },
+      {
+        path: 'boxproduct',
+        component: () => import('@/views/mall/boxproduct'),
+        name: 'boxproduct',
+        meta: {
+          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
+          title: '盒柜管理',
+          icon: 'nested',
+          noCache: true
+        }
       }
     ]
   },
@@ -385,53 +396,6 @@ export const asyncRouterMap = [
           perms: ['GET /admin/os/list', 'POST /admin/os/create', 'POST /admin/os/update', 'POST /admin/os/delete'],
           title: '对象存储',
           icon: 'lock',
-          noCache: true
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/stat',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'statManage',
-    meta: {
-      title: '统计',
-      icon: 'chart'
-    },
-    children: [
-      {
-        path: 'user',
-        component: () => import('@/views/stat/user'),
-        name: 'statUser',
-        meta: {
-          perms: ['GET /admin/stat/user'],
-          title: '用户统计',
-          icon: 'user',
-          noCache: true
-        }
-      },
-      {
-        path: 'order',
-        component: () => import('@/views/stat/order'),
-        name: 'statOrder',
-        meta: {
-          perms: ['GET /admin/stat/order'],
-          title: '订单统计',
-          icon: 'shopping',
-          noCache: true
-        }
-      },
-      {
-        path: 'goods',
-        component: () => import('@/views/stat/goods'),
-        name: 'statGoods',
-        meta: {
-          perms: ['GET /admin/stat/goods'],
-          title: '商品统计',
-          icon: 'table',
           noCache: true
         }
       }

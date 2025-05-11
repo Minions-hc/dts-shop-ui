@@ -252,7 +252,6 @@ export default {
   },
   created() {
     this.getList()
-    this.getCatL1()
   },
   methods: {
     getList() {
@@ -310,8 +309,6 @@ export default {
           createLogistics(this.dataForm)
             .then(response => {
               this.list.unshift(response.data.data)
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
