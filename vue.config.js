@@ -23,18 +23,22 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: './',
+  css: {
+    extract: true,
+    sourceMap: false
+  },
+  publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
     proxy: {
-      '/admin-api': {
-        target: 'http://localhost:8083/admin',
+      '/admin': {
+        target: 'http://47.113.113.51:8083',
         changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          '^/admin': '/admin'
         },
         timeout: 1000 * 5
       },
@@ -99,7 +103,7 @@ module.exports = {
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
             // `runtime` must same as runtimeChunk name. default is `runtime`
-              inline: /runtime\..*\.js$/
+              // inline: /runtime\..*\.js$/
             }])
             .end()
           config
