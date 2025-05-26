@@ -146,16 +146,19 @@ export default {
           if (this.loginForm.rememberMe) {
             Cookies.set('username', this.loginForm.username, { expires: 30 })
             Cookies.set('password', this.loginForm.password, { expires: 30 })
-            Cookies.set('rememberMe', this.loginForm.rememberMe, {
-              expires: 30
-            })
+            Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 })
           } else {
             Cookies.remove('username')
             Cookies.remove('password')
             Cookies.remove('rememberMe')
           }
+          // 构建登录参数，包含UUID
+          const loginParams = {
+            ...this.loginForm,
+            uuid: this.captchaUUID
+          }
           this.$store
-            .dispatch('LoginByUsername', this.loginForm)
+            .dispatch('LoginByUsername', loginParams)
             .then(() => {
               this.loading = false
               this.$router.push({ path: this.redirect || '/' })
@@ -163,16 +166,29 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.errmsg || '登录失败'
               })
               this.loading = false
+              // 登录失败时刷新验证码
+              this.getCodeImage()
+              this.loginForm.captchaCode = '' // 清空验证码输入框
             })
         }
       })
     },
+    // 安全的UUID生成函数（兼容所有浏览器）
+    generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0
+        const v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+      })
+    },
     async getCodeImage() {
       try {
-        const url = process.env.VUE_APP_BASE_API + '/auth/captchaImage'
+        // 生成UUID并存储
+        this.captchaUUID = this.generateUUID()
+        const url = process.env.VUE_APP_BASE_API + '/auth/captchaImage?uuid=' + this.captchaUUID
         const response = await axios.get(url, {
           responseType: 'blob' // 关键配置：声明响应类型为二进制流
         })
