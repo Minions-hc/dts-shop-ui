@@ -3,66 +3,217 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.id" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目ID"/>
-      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目名称"/>
-      <el-button v-permission="['GET /admin/category/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/category/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input
+        v-model="listQuery.id"
+        clearable
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        placeholder="请输入类目ID"
+      />
+      <el-input
+        v-model="listQuery.name"
+        clearable
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        placeholder="请输入类目名称"
+      />
+      <el-button
+        v-permission="['GET /admin/category/list']"
+        size="mini"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >查找</el-button>
+      <el-button
+        v-permission="['POST /admin/category/create']"
+        size="mini"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleCreate"
+      >添加</el-button>
+      <el-button
+        :loading="downloadLoading"
+        size="mini"
+        class="filter-item"
+        type="warning"
+        icon="el-icon-download"
+        @click="handleDownload"
+      >导出</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      size="small"
+      element-loading-text="正在查询中。。。"
+      border
+      fit
+      highlight-current-row
+    >
 
-      <el-table-column align="center" label="箱子ID" prop="boxId" sortable/>
+      <el-table-column
+        align="center"
+        label="箱子ID"
+        prop="boxId"
+        sortable
+      />
 
-      <el-table-column align="center" label="箱子编号" prop="boxNumber"/>
+      <el-table-column
+        align="center"
+        label="箱子编号"
+        prop="boxNumber"
+      />
 
-      <el-table-column align="center" label="系列ID" prop="seriesId"/>
+      <el-table-column
+        align="center"
+        label="系列ID"
+        prop="seriesId"
+      />
 
-      <el-table-column align="center" label="系列名称" prop="seriesName"/>
+      <el-table-column
+        align="center"
+        label="系列名称"
+        prop="seriesName"
+      />
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column
+        align="center"
+        label="操作"
+        width="200"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/category/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /admin/category/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            v-permission="['POST /admin/category/update']"
+            type="primary"
+            size="mini"
+            @click="handleUpdate(scope.row)"
+          >编辑</el-button>
+          <el-button
+            v-permission="['POST /admin/category/delete']"
+            type="danger"
+            size="mini"
+            @click="handleDelete(scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
 
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 1000px; margin-left:50px;">
-        <el-form-item label="箱子编号" prop="boxNumber">
-          <el-input style="width: 200px;" v-model="dataForm.boxNumber" :disabled="dialogStatus === 'update'"/>
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="dataForm"
+        status-icon
+        label-position="left"
+        label-width="100px"
+        style="width: 1000px; margin-left:50px;"
+      >
+        <el-form-item
+          label="箱子编号"
+          prop="boxNumber"
+        >
+          <el-input
+            v-model="dataForm.boxNumber"
+            style="width: 200px;"
+            :disabled="dialogStatus === 'update'"
+          />
         </el-form-item>
-        <el-form-item label="所属系列" prop="seriesId">
-          <el-select style="width: 200px;" v-model="dataForm.seriesId"  @change="handleOptionChange" :disabled="dialogStatus === 'update'">
-            <el-option v-for="item in productSeriesList" :key="item.seriesId" :label="item.seriesName" :value="item.seriesId"/>
+        <el-form-item
+          label="所属系列"
+          prop="seriesId"
+        >
+          <el-select
+            v-model="dataForm.seriesId"
+            style="width: 200px;"
+            :disabled="dialogStatus === 'update'"
+            @change="handleOptionChange"
+          >
+            <el-option
+              v-for="item in productSeriesList"
+              :key="item.seriesId"
+              :label="item.seriesName"
+              :value="item.seriesId"
+            />
           </el-select>
         </el-form-item>
 
-        <el-form-item label="产品列表" v-if="products.length > 0">
+        <el-form-item
+          v-if="products.length > 0"
+          label="产品列表"
+        >
           <el-table
-            :data="products"
             v-loading="loading"
+            :data="products"
             style="width: 1000px"
             :default-sort="{prop: 'productId', order: 'ascending'}"
+          >
+            <el-table-column
+              prop="productId"
+              label="ID"
+              width="100"
+              sortable
+              header-align="center"
+              align="center"
+            />
+            <el-table-column
+              prop="productName"
+              label="产品名称"
+              width="200"
+              header-align="center"
+              align="center"
+            />
+            <el-table-column
+              prop="productPrice"
+              label="价格"
+              width="80"
+              header-align="center"
+              align="center"
+            />
+            <el-table-column
+              prop="productSeriesName"
+              label="系列名称"
+              width="200"
+              header-align="center"
+              align="center"
+            />
+            <el-table-column
+              prop="productLevelName"
+              label="产品等级"
+              width="200"
+              header-align="center"
+              align="center"
+            />
+
+            <el-table-column
+              label="库存"
+              width="100"
+              header-align="center"
+              align="center"
             >
-            <el-table-column prop="productId" label="ID" width="100" sortable header-align="center" align="center"/>
-            <el-table-column prop="productName" label="产品名称" width="200" header-align="center" align="center"/>
-            <el-table-column prop="productPrice" label="价格" width="80" header-align="center" align="center"/>
-            <el-table-column prop="productSeriesName" label="系列名称" width="200" header-align="center" align="center"/>
-            <el-table-column prop="productLevelName" label="产品等级" width="200" header-align="center" align="center"/>
-            
-            <el-table-column label="库存" width="100" header-align="center" align="center">
               <template #default="scope">
-                <el-form-item 
+                <el-form-item
                   :prop="'products.' + scope.$index + '.quantity'"
                 >
-                  <el-input 
-                    v-model.number="scope.row.quantity" 
+                  <el-input
+                    v-model.number="scope.row.quantity"
                     type="number"
                     :min="0"
                     :step="1"
@@ -72,53 +223,34 @@
               </template>
             </el-table-column>
           </el-table>
-          <div v-if="!loading && products.length === 0" class="empty-tip">
-            <el-empty description="该系列暂无产品"></el-empty>
+          <div
+            v-if="!loading && products.length === 0"
+            class="empty-tip"
+          >
+            <el-empty description="该系列暂无产品" />
           </div>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确定</el-button>
-        <el-button v-else type="primary" @click="updateData">确定</el-button>
+        <el-button
+          v-if="dialogStatus=='create'"
+          type="primary"
+          @click="createData"
+        >确定</el-button>
+        <el-button
+          v-else
+          type="primary"
+          @click="updateData"
+        >确定</el-button>
       </div>
     </el-dialog>
 
   </div>
 </template>
-
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #20a0ff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
-  text-align: center;
-}
-.avatar {
-  width: 145px;
-  height: 145px;
-  display: block;
-}
-.empty-tip {
-  margin-top: 20px;
-  text-align: center;
-  background: #f5f7fa;
-  padding: 20px;
-  border-radius: 4px;
-}
-</style>
 
 <script>
 import { getProductSeries, listProductBox, createProductBox, queryProductsInBox, updateProductBox, deleteProductBox } from '@/api/business/productbox'
@@ -131,7 +263,6 @@ export default {
   name: 'Category',
   components: { Pagination },
   data() {
-
     return {
       uploadPath,
       list: undefined,
@@ -166,7 +297,7 @@ export default {
         boxNumber: [{ required: true, message: '箱子编号不能为空', trigger: 'blur' }],
         seriesId: [{ required: true, message: '请选择系列', trigger: 'blur' }]
       },
-     
+
       downloadLoading: false,
       productSeriesList: [],
       products: []
@@ -244,6 +375,7 @@ export default {
                 title: '成功',
                 message: '创建成功'
               })
+              this.getList()
             })
             .catch(response => {
               this.$notify.error({
@@ -256,7 +388,7 @@ export default {
     },
     handleUpdate(row) {
       this.dataForm = Object.assign({}, row)
-      queryProductsInBox({"boxId" : this.dataForm.boxId, "boxNumber" : this.dataForm.boxNumber, "seriesId" : this.dataForm.seriesId}).then(response => {
+      queryProductsInBox({ 'boxId': this.dataForm.boxId, 'boxNumber': this.dataForm.boxNumber, 'seriesId': this.dataForm.seriesId }).then(response => {
         this.products = response.data.data.items
       }).catch(() => {
         this.products = []
@@ -286,6 +418,7 @@ export default {
                 title: '成功',
                 message: '更新成功'
               })
+              this.getList()
             })
             .catch(response => {
               this.$notify.error({
@@ -346,19 +479,52 @@ export default {
       })
     },
     handleOptionChange(productSeriesId) {
-      console.log(productSeriesId);
+      console.log(productSeriesId)
       if (!productSeriesId) {
-        this.products = [];
-        return;
+        this.products = []
+        return
       }
-      this.loading = true;
-      getProductList({"productSeriesId" : productSeriesId}).then(response => {
+      this.loading = true
+      getProductList({ 'productSeriesId': productSeriesId }).then(response => {
         this.products = response.data.data.items
       }).catch(() => {
         this.products = []
       })
-      this.loading = false;
+      this.loading = false
     }
   }
 }
 </script>
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #20a0ff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+}
+.avatar {
+  width: 145px;
+  height: 145px;
+  display: block;
+}
+.empty-tip {
+  margin-top: 20px;
+  text-align: center;
+  background: #f5f7fa;
+  padding: 20px;
+  border-radius: 4px;
+}
+</style>
