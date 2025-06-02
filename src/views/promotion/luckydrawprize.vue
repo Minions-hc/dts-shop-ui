@@ -210,9 +210,8 @@
 </template>
 
 <script>
-import { listLuckyDrawPrize, deleteLuckyDrawPrize, createLuckyDrawPrize, updateLuckyDrawPrize } from '@/api/business/luckydrawprize'
+import { listLuckyDrawPrize, deleteLuckyDrawPrize, createLuckyDrawPrize, updateLuckyDrawPrize, getNoSeriesProducts } from '@/api/business/luckydrawprize'
 import { listLuckyDraw } from '@/api/business/luckydraw'
-import { getProductList } from '@/api/business/goods'
 import { listRedemptionCode } from '@/api/business/redemptioncode'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -257,7 +256,7 @@ export default {
       listLuckyDraw().then(response => {
         this.activityList = response.data.data.items
       })
-      getProductList().then(response => {
+      getNoSeriesProducts().then(response => {
         this.products = response.data.data.items
       })
       listRedemptionCode({ available: true, codeType: 0 }).then(response => {

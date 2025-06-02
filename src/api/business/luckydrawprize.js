@@ -8,6 +8,13 @@ export function listLuckyDrawPrize(query) {
   })
 }
 
+export function getNoSeriesProducts() {
+  return request({
+    url: '/luckydraw/prize/getNoSeriesProducts',
+    method: 'get'
+  })
+}
+
 export function deleteLuckyDrawPrize(data) {
   return request({
     url: '/luckydraw/prize/delete',
