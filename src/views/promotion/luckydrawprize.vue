@@ -135,7 +135,6 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-
         <el-form-item label="活动名称">
           <el-select
             v-model="dataForm.activityId"
@@ -150,7 +149,22 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="奖品名称">
+        <!-- 新增奖品类型单选按钮 -->
+        <el-form-item label="奖品类型">
+          <el-radio-group
+            v-model="dataForm.rewardType"
+            @change="handleRewardTypeChange"
+          >
+            <el-radio label="prize">奖品</el-radio>
+            <el-radio label="coupon">优惠券</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <!-- 奖品名称 -->
+        <el-form-item
+          v-if="dataForm.rewardType === 'prize'"
+          label="奖品名称"
+        >
           <el-select
             v-model="dataForm.productName"
             style="width: 300px;"
@@ -165,15 +179,53 @@
           </el-select>
         </el-form-item>
 
+        <!-- 优惠券名称 -->
         <el-form-item
+          v-if="dataForm.rewardType === 'coupon'"
+          label="优惠券名称"
+        >
+          <el-select
+            v-model="dataForm.couponName"
+            style="width: 300px;"
+            @change="handleCouponChange"
+          >
+            <el-option
+              v-for="item in coupons"
+              :key="item.couponId"
+              :label="item.couponName"
+              :value="item.couponId"
+            />
+          </el-select>
+        </el-form-item>
+
+        <!-- 奖品数量 -->
+        <el-form-item
+          v-if="dataForm.rewardType === 'prize'"
           label="奖品数量"
           prop="productQuantity"
         >
           <el-input v-model="dataForm.productQuantity" />
         </el-form-item>
 
-        <el-form-item label="兑换码">
+        <!-- 优惠券数量 (只读) -->
+        <el-form-item
+          v-if="dataForm.rewardType === 'coupon'"
+          label="优惠券数量"
+        >
+          <el-input
+            v-model="dataForm.couponQuantity"
+            :disabled="true"
+          />
+        </el-form-item>
+
+        <!-- 兑换码 - 根据类型显示不同控件 -->
+        <el-form-item
+          v-if="dataForm.rewardType"
+          label="兑换码"
+        >
+          <!-- 奖品类型 - 显示下拉选择框 -->
           <el-select
+            v-if="dataForm.rewardType === 'prize'"
             v-model="dataForm.redemptionCode"
             style="width: 300px;"
             :disabled="dialogStatus === 'update'"
@@ -185,10 +237,14 @@
               :value="item.code"
             />
           </el-select>
+          <!-- 优惠券类型 - 显示只读输入框 -->
+          <el-input
+            v-else
+            v-model="dataForm.redemptionCode"
+            :disabled="true"
+          />
         </el-form-item>
-
       </el-form>
-
       <div
         slot="footer"
         class="dialog-footer"
@@ -212,6 +268,7 @@
 <script>
 import { listLuckyDrawPrize, deleteLuckyDrawPrize, createLuckyDrawPrize, updateLuckyDrawPrize, getNoSeriesProducts } from '@/api/business/luckydrawprize'
 import { listLuckyDraw } from '@/api/business/luckydraw'
+import { listCoupon } from '@/api/business/coupon'
 import { listRedemptionCode } from '@/api/business/redemptioncode'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -222,6 +279,7 @@ export default {
   data() {
     return {
       products: [],
+      coupons: [],
       redemptionCodes: [],
       activityList: [],
       list: [],
@@ -236,6 +294,9 @@ export default {
         sort: 'add_time',
         order: 'desc'
       },
+      couponQuery: {
+        status: 2
+      },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -244,20 +305,69 @@ export default {
       },
       dataForm: {
         productId: undefined,
-        productName: ''
+        productName: '',
+        activityId: '',
+        rewardType: 'prize',
+        productQuantity: '',
+        couponId: '',
+        couponName: '',
+        couponQuantity: '',
+        redemptionCode: ''
       }
     }
   },
   created() {
     this.getList()
   },
+  mounted() {
+    // 确保初始值正确
+    if (!this.dataForm.rewardType) {
+      this.$set(this.dataForm, 'rewardType', 'prize')
+    }
+  },
   methods: {
+    handleRewardTypeChange(val) {
+      // 切换类型时清空相关字段
+      this.dataForm.productName = ''
+      this.dataForm.productQuantity = ''
+      this.dataForm.couponId = ''
+      this.dataForm.couponName = ''
+      this.dataForm.couponQuantity = ''
+      this.dataForm.redemptionCode = ''
+    },
+    handleCouponChange(couponId) {
+      // 处理优惠券选择逻辑
+      const selected = this.coupons.find(item => item.couponId === couponId)
+      if (selected) {
+        this.dataForm.couponQuantity = selected.remainingQuantity
+        this.dataForm.redemptionCode = selected.redemptionCode
+        this.dataForm.couponId = couponId
+        this.dataForm.couponName = selected.couponName
+      }
+    },
+    // 初始化数据的方法
+    initFormData() {
+      this.dataForm = {
+        rewardType: 'prize',
+        activityId: '',
+        productName: '',
+        productQuantity: '',
+        couponId: '',
+        couponName: '',
+        couponQuantity: '',
+        redemptionCode: ''
+      }
+    },
     loadLSelectOptionData() {
       listLuckyDraw().then(response => {
         this.activityList = response.data.data.items
       })
       getNoSeriesProducts().then(response => {
         this.products = response.data.data.items
+      })
+      listCoupon(this.couponQuery).then(response => {
+        this.coupons = response.data.data.items
+        console.log(this.coupons)
       })
       listRedemptionCode({ available: true, codeType: 0 }).then(response => {
         this.redemptionCodes = response.data.data.items
@@ -301,6 +411,7 @@ export default {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
+        this.initFormData()
         this.$refs['dataForm'].clearValidate()
       })
     },
@@ -333,6 +444,11 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
+        this.dataForm = Object.assign({}, row)
+        // 确保rewardType存在
+        if (!this.dataForm.rewardType) {
+          this.dataForm.rewardType = 'prize'
+        }
       })
     },
     updateData() {
