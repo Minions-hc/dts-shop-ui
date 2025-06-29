@@ -202,21 +202,11 @@
           >删除</el-button> -->
           <!-- 上架按钮 -->
           <el-button
-            v-if="!scope.row.isOnSale"
             v-permission="['POST /admin/productSeries/updateOnSaleStatus']"
-            type="success"
+            :type="scope.row.isOnSale ? 'warning' : 'success'"
             size="mini"
-            @click="handleUpdateOnSaleStatus(scope.row, true)"
-          >上架</el-button>
-
-          <!-- 下架按钮 -->
-          <el-button
-            v-else
-            v-permission="['POST /admin/productSeries/updateOnSaleStatus']"
-            type="warning"
-            size="mini"
-            @click="handleUpdateOnSaleStatus(scope.row, false)"
-          >下架</el-button>
+            @click="handleUpdateOnSaleStatus(scope.row, scope.row.isOnSale ? false : true)"
+          > {{ scope.row.isOnSale ? '下架' : '上架' }} </el-button>
         </template>
       </el-table-column>
     </el-table>

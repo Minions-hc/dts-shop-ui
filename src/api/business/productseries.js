@@ -35,7 +35,7 @@ export function deleteProductSeries(data) {
 // 更新产品系列状态
 export function updateProductSeriesOnSaleStatus(data) {
   return request({
-    url: '/productSeries/updateStatus',
+    url: '/productSeries/updateOnSaleStatus',
     method: 'post',
     data
   })
