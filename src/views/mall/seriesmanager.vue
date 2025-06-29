@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input
@@ -8,7 +7,7 @@
         clearable
         size="mini"
         class="filter-item"
-        style="width: 200px;"
+        style="width: 200px"
         placeholder="请输入系列ID"
       />
       <el-input
@@ -16,7 +15,7 @@
         clearable
         size="mini"
         class="filter-item"
-        style="width: 200px;"
+        style="width: 200px"
         placeholder="请输入系列名称"
       />
       <el-button
@@ -55,7 +54,6 @@
       fit
       highlight-current-row
     >
-
       <el-table-column
         align="center"
         label="类目ID"
@@ -104,7 +102,9 @@
         prop="isSpiritPower"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isSpiritPower ? 'success' : 'error' ">{{ scope.row.isSpiritPower ? '是' : '否' }}</el-tag>
+          <el-tag :type="scope.row.isSpiritPower ? 'success' : 'error'">{{
+            scope.row.isSpiritPower ? "是" : "否"
+          }}</el-tag>
         </template>
       </el-table-column>
 
@@ -114,7 +114,9 @@
         prop="isHot"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '是' : '否' }}</el-tag>
+          <el-tag :type="scope.row.isHot ? 'success' : 'error'">{{
+            scope.row.isHot ? "是" : "否"
+          }}</el-tag>
         </template>
       </el-table-column>
 
@@ -124,7 +126,9 @@
         prop="isAvoid"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isAvoid ? 'success' : 'error' ">{{ scope.row.isAvoid ? '是' : '否' }}</el-tag>
+          <el-tag :type="scope.row.isAvoid ? 'success' : 'error'">{{
+            scope.row.isAvoid ? "是" : "否"
+          }}</el-tag>
         </template>
       </el-table-column>
 
@@ -132,15 +136,19 @@
         align="center"
         label="价格区间"
         prop="priceRanges"
+        width="180"
       >
         <template #default="{ row }">
-          <div
-            v-if="row.priceRanges"
-            style="white-space: pre-line;"
+          <el-tooltip
+            :content="formatPriceRanges(row.priceRanges)"
+            placement="top"
+            effect="light"
+            :disabled="!shouldShowTooltip(row.priceRanges)"
           >
-            {{ formatPriceRanges(row.priceRanges) }}
-          </div>
-          <span v-else>-</span>
+            <div class="price-ranges-cell">
+              {{ formatPriceRangesForCell(row.priceRanges) }}
+            </div>
+          </el-tooltip>
         </template>
       </el-table-column>
 
@@ -150,7 +158,9 @@
         prop="isPopularNew"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isPopularNew ? 'success' : 'error' ">{{ scope.row.isPopularNew ? '是' : '否' }}</el-tag>
+          <el-tag :type="scope.row.isPopularNew ? 'success' : 'error'">{{
+            scope.row.isPopularNew ? "是" : "否"
+          }}</el-tag>
         </template>
       </el-table-column>
 
@@ -160,7 +170,9 @@
         prop="isHotRecommend"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isHotRecommend ? 'success' : 'error' ">{{ scope.row.isHotRecommend ? '是' : '否' }}</el-tag>
+          <el-tag :type="scope.row.isHotRecommend ? 'success' : 'error'">{{
+            scope.row.isHotRecommend ? "是" : "否"
+          }}</el-tag>
         </template>
       </el-table-column>
 
@@ -182,18 +194,35 @@
             size="mini"
             @click="handleUpdate(scope.row)"
           >编辑</el-button>
-          <el-button
+          <!-- <el-button
             v-permission="['POST /admin/productSeries/deleteProductSeries']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+          >删除</el-button> -->
+          <!-- 上架按钮 -->
+          <el-button
+            v-if="!scope.row.isOnSale"
+            v-permission="['POST /admin/productSeries/updateOnSaleStatus']"
+            type="success"
+            size="mini"
+            @click="handleUpdateOnSaleStatus(scope.row, true)"
+          >上架</el-button>
+
+          <!-- 下架按钮 -->
+          <el-button
+            v-else
+            v-permission="['POST /admin/productSeries/updateOnSaleStatus']"
+            type="warning"
+            size="mini"
+            @click="handleUpdateOnSaleStatus(scope.row, false)"
+          >下架</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
@@ -212,7 +241,7 @@
         status-icon
         label-position="left"
         label-width="100px"
-        style="width: 500px; margin-left:50px;"
+        style="width: 500px; margin-left: 50px"
       >
         <el-form-item
           label="系列名称"
@@ -342,7 +371,9 @@
             v-model="dataForm.price"
             :placeholder="dataForm.isSpiritPower ? '0' : '0.00'"
           >
-            <template slot="append">{{ dataForm.isSpiritPower ? '点' : '元' }}</template>
+            <template slot="append">{{
+              dataForm.isSpiritPower ? "点" : "元"
+            }}</template>
           </el-input>
         </el-form-item>
       </el-form>
@@ -352,7 +383,7 @@
       >
         <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button
-          v-if="dialogStatus=='create'"
+          v-if="dialogStatus == 'create'"
           type="primary"
           @click="createData"
         >确定</el-button>
@@ -363,12 +394,17 @@
         >确定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-import { productSeriesList, createProductSeries, updateProductSeries, deleteProductSeries } from '@/api/business/productseries'
+import {
+  productSeriesList,
+  createProductSeries,
+  updateProductSeries,
+  deleteProductSeries,
+  updateProductSeriesOnSaleStatus
+} from '@/api/business/productseries'
 import { productCategoryList } from '@/api/business/productcategory'
 import { uploadPath } from '@/api/business/storage'
 import { getToken } from '@/utils/auth'
@@ -441,12 +477,17 @@ export default {
   },
   watch: {
     'dataForm.isAvoid'(newVal) {
-      if (newVal && (!this.dataForm.priceRanges || this.dataForm.priceRanges.length === 0)) {
-        this.dataForm.priceRanges = [{
-          minQuantity: null,
-          maxQuantity: null,
-          price: null
-        }]
+      if (
+        newVal &&
+        (!this.dataForm.priceRanges || this.dataForm.priceRanges.length === 0)
+      ) {
+        this.dataForm.priceRanges = [
+          {
+            minQuantity: null,
+            maxQuantity: null,
+            price: null
+          }
+        ]
       }
       this.checkFormValidity()
     },
@@ -471,28 +512,55 @@ export default {
         this.dataForm.isHotRecommend = false
       }
     },
+    formatPriceRangesForCell(priceRanges) {
+      const formatted = this.formatPriceRanges(priceRanges)
+
+      // 如果内容为空或不需要截断，直接返回
+      if (!formatted || formatted === '-' || formatted.length <= 15) {
+        return formatted
+      }
+
+      // 截取前15个字符并添加省略号
+      return formatted.substring(0, 15) + '...'
+    },
+
+    // 检查是否需要显示tooltip（内容超过15字符）
+    shouldShowTooltip(priceRanges) {
+      const formatted = this.formatPriceRanges(priceRanges)
+      return formatted && formatted !== '-' && formatted.length > 15
+    },
     formatPriceRanges(priceRanges) {
       try {
         // 1. 处理空值情况
         if (!priceRanges) return '-'
 
         // 2. 解析数据
-        const ranges = typeof priceRanges === 'string'
-          ? JSON.parse(priceRanges)
-          : priceRanges
+        const ranges =
+          typeof priceRanges === 'string'
+            ? JSON.parse(priceRanges)
+            : priceRanges
 
         // 3. 验证数据格式
         if (!Array.isArray(ranges)) return '-'
 
         // 4. 格式化显示
-        return ranges
-          .filter(range => range && range.minQuantity !== undefined && range.maxQuantity !== undefined)
-          .map(range => {
-            // 处理可能为null的price
-            const price = range.price !== null ? range.price : 0
-            return `区间【${range.minQuantity}-${range.maxQuantity}】价格为：${price.toFixed(1)}`
-          })
-          .join('\n') || '-' // 空数组时显示-
+        return (
+          ranges
+            .filter(
+              (range) =>
+                range &&
+                range.minQuantity !== undefined &&
+                range.maxQuantity !== undefined
+            )
+            .map((range) => {
+              // 处理可能为null的price
+              const price = range.price !== null ? range.price : 0
+              return `区间【${range.minQuantity}-${
+                range.maxQuantity
+              }】价格为：${price.toFixed(1)}`
+            })
+            .join('\n') || '-'
+        ) // 空数组时显示-
       } catch (e) {
         console.error('格式化价格区间失败:', e)
         return '数据格式错误'
@@ -505,7 +573,10 @@ export default {
       }
 
       // 添加空数组检查
-      if (!this.dataForm.priceRanges || this.dataForm.priceRanges.length === 0) {
+      if (
+        !this.dataForm.priceRanges ||
+        this.dataForm.priceRanges.length === 0
+      ) {
         this.formValid = false
         return
       }
@@ -521,7 +592,7 @@ export default {
     getList() {
       this.listLoading = true
       productSeriesList(this.listQuery)
-        .then(response => {
+        .then((response) => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -532,7 +603,7 @@ export default {
           this.listLoading = false
         })
 
-      productCategoryList().then(response => {
+      productCategoryList().then((response) => {
         this.categoryList = response.data.data.items
       })
     },
@@ -576,7 +647,7 @@ export default {
       this.dataForm.seriesImage = response.data.url
     },
     createData() {
-      this.$refs['dataForm'].validate(valid => {
+      this.$refs['dataForm'].validate((valid) => {
         this.checkFormValidity()
         if (!this.formValid) return
         if (valid) {
@@ -589,13 +660,13 @@ export default {
               : undefined // 不显示时设为 undefined
           }
           // 移除 undefined 字段
-          Object.keys(submitData).forEach(key => {
+          Object.keys(submitData).forEach((key) => {
             if (submitData[key] === undefined) {
               delete submitData[key]
             }
           })
           createProductSeries(submitData)
-            .then(response => {
+            .then((response) => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
               this.$notify.success({
@@ -604,7 +675,7 @@ export default {
               })
               this.getList()
             })
-            .catch(response => {
+            .catch((response) => {
               this.$notify.error({
                 title: '失败',
                 message: response.data.errmsg
@@ -622,7 +693,7 @@ export default {
       })
     },
     updateData() {
-      this.$refs['dataForm'].validate(valid => {
+      this.$refs['dataForm'].validate((valid) => {
         this.checkFormValidity()
         if (!this.formValid) return
         if (valid) {
@@ -636,7 +707,7 @@ export default {
           }
 
           // 移除 undefined 字段
-          Object.keys(submitData).forEach(key => {
+          Object.keys(submitData).forEach((key) => {
             if (submitData[key] === undefined) {
               delete submitData[key]
             }
@@ -657,7 +728,7 @@ export default {
               })
               this.getList()
             })
-            .catch(response => {
+            .catch((response) => {
               this.$notify.error({
                 title: '失败',
                 message: response.data.errmsg
@@ -668,7 +739,7 @@ export default {
     },
     handleDelete(row) {
       deleteProductSeries(row)
-        .then(response => {
+        .then((response) => {
           this.$notify.success({
             title: '成功',
             message: '删除成功'
@@ -676,7 +747,7 @@ export default {
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)
         })
-        .catch(response => {
+        .catch((response) => {
           this.$notify.error({
             title: '失败',
             message: response.data.errmsg
@@ -685,7 +756,7 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
+      import('@/vendor/Export2Excel').then((excel) => {
         const tHeader = [
           '类目ID',
           '名称',
@@ -714,6 +785,42 @@ export default {
         )
         this.downloadLoading = false
       })
+    },
+    // 新增：处理上架状态更新
+    handleUpdateOnSaleStatus(row, isOnSale) {
+      const action = isOnSale ? '上架' : '下架'
+      const confirmMessage = isOnSale
+        ? '确定要上架该系列吗？上架后用户可见'
+        : '确定要下架该系列吗？下架后用户将不可见'
+
+      this.$confirm(confirmMessage, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          updateProductSeriesOnSaleStatus({
+            seriesId: row.seriesId,
+            isOnSale: isOnSale
+          })
+            .then((response) => {
+              this.$notify.success({
+                title: '成功',
+                message: `${action}成功`
+              })
+              // 更新本地数据状态，避免重新加载整个列表
+              row.isOnSale = isOnSale
+            })
+            .catch((error) => {
+              this.$notify.error({
+                title: '失败',
+                message: error.response?.data?.errmsg || `${action}失败`
+              })
+            })
+        })
+        .catch(() => {
+          // 用户取消操作
+        })
     }
   }
 }
@@ -765,5 +872,13 @@ label {
 
 .preview-section li {
   padding: 5px 0;
+}
+
+.price-ranges-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  cursor: default;
 }
 </style>
